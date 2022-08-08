@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  postgres:
+    image: "postgres:13-alpine"
+    hostname: "postgres"
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+      POSTGRES_DB: "BasicApiComparison"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

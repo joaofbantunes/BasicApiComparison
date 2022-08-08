@@ -1,0 +1,129 @@
+version: "3"
+
+services:
+  postgres:
+    image: "postgres:13-alpine"
+    hostname: "postgres"
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+      POSTGRES_DB: "BasicApiComparison"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  csharp:
+    build:
+      context: .
+      dockerfile: ./dotnet/src/Api/Dockerfile.default
+    image: basicapicomparison/csharp:latest
+    container_name: csharp
+    ports:
+      - "6000:80"
+    environment:
+      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
+    depends_on:
+      - postgres
+  # csharp-r2r:
+  #   build:
+  #     context: .
+  #     dockerfile: ./dotnet/src/Api/Dockerfile.r2r
+  #     args:
+  #       runtime_identifier: linux-x64
+  #   image: basicapicomparison/csharp-r2r:latest
+  #   container_name: csharp-r2r
+  #   ports:
+  #     - "6001:80"
+  #   environment:
+  #     ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"      
+  #     Stack: "csharp-r2r"
+  #   depends_on:
+  #    - postgres
+  fsharp:
+    build:
+      context: .
+      dockerfile: ./dotnet/src/ApiFSharp/Dockerfile
+    image: basicapicomparison/fsharp:latest
+    container_name: fsharp
+    ports:
+      - "6002:80"
+    environment:
+      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
+    depends_on:
+      - postgres
+  python:
+    build:
+      context: ./python
+    image: basicapicomparison/python:latest
+    container_name: python
+    ports:
+      - "6003:80"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  node-raw:
+    build:
+      context: ./node/raw
+    image: basicapicomparison/node-raw:latest
+    container_name: node-raw
+    ports:
+      - "6004:80"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  node-express:
+    build:
+      context: ./node/express
+    image: basicapicomparison/node-express:latest
+    container_name: node-express
+    ports:
+      - "6005:80"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  go:
+    build:
+      context: ./go
+    image: basicapicomparison/go:latest
+    container_name: go
+    ports:
+      - "6006:8080"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  kotlin:
+    build:
+      context: ./kotlin
+    image: basicapicomparison/kotlin:latest
+    container_name: kotlin
+    ports:
+      - "6007:8080"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
