@@ -1,7 +1,7 @@
 #!/bin/sh
 
 vu=15
-duration="15s"
+duration="5s"
 
 echo "running csharp (cold start)"
 k6 run -e STACK=csharp -e URL=http://localhost:6000 --vus $vu --duration $duration script.js

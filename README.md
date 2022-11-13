@@ -21,18 +21,19 @@ APIs were developed with
 
 ## k6 run results
 
-The k6 test was very simple. Hammer the API during 15 seconds with 15 virtual users.
+The k6 test was very simple. Hammer the API during 5 seconds with 15 virtual users.
 
 
-| Stack        | Requests Per Second |
-| ------------ | ------------------- |
-| csharp       | 8139                |
-| csharp-r2r   | 8159                |
-| fsharp       | 8027                |
-| python       | 4195                |
-| node-raw     | 7883                |
-| node-express | 5867                |
-| go           | 11037               |
-| kotlin       | 6723                |
+| Stack             | Requests Per Second |
+| ----------------- | ------------------- |
+| csharp            | 8379                |
+| csharp-tiered-pgo | 8620                |
+| csharp-r2r        | 8292                |
+| fsharp            | 8492                |
+| python            | 4237                |
+| node-raw          | 8555                |
+| node-express      | 6369                |
+| go                | 11704               |
+| kotlin            | 6998                |
 
 ⚠️ Again, don't take this too seriously! For actually well done performance tests, check out [TechEmpower Web Framework Benchmarks](https://www.techempower.com/benchmarks). I just felt like playing around with stuff without much care.

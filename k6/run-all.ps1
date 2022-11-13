@@ -1,5 +1,5 @@
 $vu = 15
-$duration = "15s"
+$duration = "5s"
 
 
 echo "running csharp (cold start)"
