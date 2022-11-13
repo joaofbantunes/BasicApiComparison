@@ -9,6 +9,12 @@ k6 run -e STACK=csharp -e URL=http://localhost:6000 --vus $vu --duration $durati
 echo "running csharp"
 k6 run -e STACK=csharp -e URL=http://localhost:6000 --vus $vu --duration $duration script.js
 
+echo "running csharp tiered pgo (cold start)"
+k6 run -e STACK=csharp-tiered-pgo -e URL=http://localhost:6008 --vus $vu --duration $duration script.js
+
+echo "running csharp tiered pgo"
+k6 run -e STACK=csharp-tiered-pgo -e URL=http://localhost:6008 --vus $vu --duration $duration script.js
+
 # echo "running csharp r2r (cold start)"
 # k6 run -e URL=http://localhost:6001 --vus $vu --duration $duration script.js
 
