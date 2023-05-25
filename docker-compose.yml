@@ -20,28 +20,27 @@ services:
     image: basicapicomparison/csharp:latest
     container_name: csharp
     ports:
-      - "6000:80"
+      - "6000:8080"
     environment:
       ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
     depends_on:
       - postgres
-  csharp-tiered-pgo:
+  csharp-aot:
     build:
       context: .
-      dockerfile: ./dotnet/src/Api/Dockerfile.default
-    image: basicapicomparison/csharp-tiered-pgo:latest
-    container_name: csharp-tiered-pgo
+      dockerfile: ./dotnet/src/Api/Dockerfile.aot
+      # args:
+      #   RUNTIME_IDENTIFIER: linux-arm64
+    image: basicapicomparison/csharp-aot:latest
+    container_name: csharp-aot
     ports:
-      - "6008:80"
+      - "6008:8080"
     environment:
       ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
-      # as seen on https://github.com/TechEmpower/FrameworkBenchmarks/blob/e6eee12a57aa2c575db98e6bbe01a371bda25a7a/frameworks/CSharp/aspnetcore/aspcore-ado-pg-up.dockerfile#LL10-L12C24
-      DOTNET_TieredPGO: 1 
-      DOTNET_TC_QuickJitForLoops: 1 
-      DOTNET_ReadyToRun: 0
-      Stack: csharp-tiered-pgo
+      Stack: csharp-aot
     depends_on:
       - postgres
+
   # csharp-r2r:
   #   build:
   #     context: .
@@ -57,6 +56,7 @@ services:
   #     Stack: "csharp-r2r"
   #   depends_on:
   #    - postgres
+  
   fsharp:
     build:
       context: .
@@ -64,7 +64,7 @@ services:
     image: basicapicomparison/fsharp:latest
     container_name: fsharp
     ports:
-      - "6002:80"
+      - "6002:8080"
     environment:
       ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
     depends_on:

@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <!-- having this conditional means no warnings in dev time about potential aot issues, but given this is just for playing around, it's fine-->
+    <PublishAot Condition="'$(UseAot)' == 'true'">true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="Npgsql" Version="7.0.0" />
+    <PackageReference Include="Nanorm.Npgsql" Version="0.0.4" />
+    <PackageReference Include="Npgsql" Version="8.0.0-preview.4" />
   </ItemGroup>
 
 </Project>
