@@ -23,6 +23,7 @@ services:
       - "6000:8080"
     environment:
       ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
+      # DOTNET_gcServer: 0
     depends_on:
       - postgres
   csharp-aot:
@@ -38,6 +39,7 @@ services:
     environment:
       ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
       Stack: csharp-aot
+      # DOTNET_gcServer: 0
     depends_on:
       - postgres
 
