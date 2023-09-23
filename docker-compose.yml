@@ -26,22 +26,22 @@ services:
       # DOTNET_gcServer: 0
     depends_on:
       - postgres
-  csharp-aot:
-    build:
-      context: .
-      dockerfile: ./dotnet/src/Api/Dockerfile.aot
-      # args:
-      #   RUNTIME_IDENTIFIER: linux-arm64
-    image: basicapicomparison/csharp-aot:latest
-    container_name: csharp-aot
-    ports:
-      - "6008:8080"
-    environment:
-      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
-      Stack: csharp-aot
-      # DOTNET_gcServer: 0
-    depends_on:
-      - postgres
+  # csharp-aot:
+  #   build:
+  #     context: .
+  #     dockerfile: ./dotnet/src/Api/Dockerfile.aot
+  #     # args:
+  #     #   RUNTIME_IDENTIFIER: linux-arm64
+  #   image: basicapicomparison/csharp-aot:latest
+  #   container_name: csharp-aot
+  #   ports:
+  #     - "6008:8080"
+  #   environment:
+  #     ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
+  #     Stack: csharp-aot
+  #     # DOTNET_gcServer: 0
+  #   depends_on:
+  #     - postgres
 
   # csharp-r2r:
   #   build:
@@ -138,6 +138,21 @@ services:
     container_name: kotlin
     ports:
       - "6007:8080"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  rust:
+    build:
+      context: ./rust
+    image: basicapicomparison/rust:latest
+    container_name: rust
+    ports:
+      - "6009:8080"
     environment:
       DB_USER: "user"
       DB_PASS: "pass"

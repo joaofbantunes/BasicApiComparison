@@ -55,3 +55,9 @@ k6 run -e STACK=kotlin -e URL=http://localhost:6007 --vus $vu --duration $durati
 
 echo "running kotlin"
 k6 run -e STACK=kotlin -e URL=http://localhost:6007 --vus $vu --duration $duration script.js
+
+echo "running rust (cold start)"
+k6 run -e STACK=rust -e URL=http://localhost:6009 --vus $vu --duration $duration script.js
+
+echo "running rust"
+k6 run -e STACK=rust -e URL=http://localhost:6009 --vus $vu --duration $duration script.js
