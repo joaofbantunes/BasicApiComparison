@@ -5,13 +5,14 @@ Just a bunch of basic APIs, exposing a single GET endpoint returning some databa
 Also took the opportunity to do some (very naive) performance tests.
 
 APIs were developed with
-- C#, ASP.NET Core, Npgsql, Dapper
+- C#, ASP.NET Core, Npgsql, Nanorm
 - F#, ASP.NET Core, Npgsql, Dapper
 - Python, FastAPI, asyncpg
 - JavaScript, Node.js, no web framework, pg
 - JavaScript, Node.js, Express, pg
 - Go, gorilla/mux, pgx
 - Kotlin, Ktor, Vert.x PostgreSQL Client
+- Rust, Actix, Tokio Postgres, Deadpool Postgres
 
 ## Notes
 
@@ -21,19 +22,20 @@ APIs were developed with
 
 ## k6 run results
 
-The k6 test was very simple. Hammer the API during 5 seconds with 15 virtual users.
+The k6 test was very simple. Hammer the API during 5 seconds with 10 virtual users.
 
 
 | Stack             | Requests Per Second |
 | ----------------- | ------------------- |
-| csharp            | 8379                |
-| csharp-tiered-pgo | 8620                |
-| csharp-r2r        | 8292                |
-| fsharp            | 8492                |
-| python            | 4237                |
-| node-raw          | 8555                |
-| node-express      | 6369                |
-| go                | 11704               |
-| kotlin            | 6998                |
+| csharp            | 11721               |
+| csharp-aot        | 10945               |
+| csharp-r2r        | 12115               |
+| fsharp            | 11823               |
+| python            | 7323                |
+| node-raw          | 12058               |
+| node-express      | 9609                |
+| go                | 15990               |
+| kotlin            | 10199               |
+| rust              | 10773               |
 
 ⚠️ Again, don't take this too seriously! For actually well done performance tests, check out [TechEmpower Web Framework Benchmarks](https://www.techempower.com/benchmarks). I just felt like playing around with stuff without much care.

@@ -1,8 +1,8 @@
-﻿FROM mcr.microsoft.com/dotnet/nightly/aspnet:8.0-preview-jammy-chiseled AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/nightly/sdk:8.0-preview-jammy AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 WORKDIR /src
 COPY ["dotnet/src/ApiFSharp/ApiFSharp.fsproj", "ApiFSharp/"]
 RUN dotnet restore "ApiFSharp/ApiFSharp.fsproj"

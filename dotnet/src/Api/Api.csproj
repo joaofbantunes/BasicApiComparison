@@ -10,8 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nanorm.Npgsql" Version="0.0.4" />
+    <PackageReference Include="Nanorm.Npgsql" Version="0.0.6" />
     <PackageReference Include="Npgsql" Version="8.0.0-preview.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="artifact\Api.deps.json" />
+    <_ContentIncludedByDefault Remove="artifact\Api.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="artifact\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="artifact\appsettings.json" />
   </ItemGroup>
 
 </Project>

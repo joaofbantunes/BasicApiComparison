@@ -1,11 +1,11 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.0-preview.4-jammy-chiseled AS base
+﻿FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-jammy-chiseled AS base
 # in the future, need to figure out how to install globalization dependencies, for now just ignore it
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 ENV ASPNETCORE_HTTP_PORTS=8080
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/nightly/sdk:8.0.100-preview.4-jammy AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
 RUN apt update
 RUN apt-get install -y clang zlib1g-dev
 WORKDIR /src

@@ -1,10 +1,11 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using Nanorm.Npgsql;
+using Nanorm;
 using Npgsql;
 
 Console.WriteLine(RuntimeFeature.IsDynamicCodeSupported ? "Running with JIT" : "Running with AOT");
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
@@ -22,16 +23,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.TypeInfoResolverChain.Add(SomeThingJsonContext.Default);
 });
 
+var stack = builder.Configuration.GetValue<string>("Stack") ?? "csharp";
 var app = builder.Build();
 
 
-app.MapGet("/", async (HttpContext context, IConfiguration configuration, SqlConnectionFactory sqlConnectionFactory) =>
+app.MapGet("/", async (HttpContext context, SqlConnectionFactory sqlConnectionFactory) =>
 {
     // was using Dapper, but it isn't compatible with AOT, so using Damian Edwards' Nanorm
     await using var connection = sqlConnectionFactory();
-    await connection.OpenAsync();
     var item = await connection.QuerySingleAsync<SomeThing>("SELECT SomeId, SomeText FROM SomeThing LIMIT 1");
-    context.Response.Headers.Add("stack", configuration.GetValue<string>("Stack") ?? "csharp");
+    context.Response.Headers["stack"] = stack;
     return Results.Ok(item);
 });
 
@@ -39,14 +40,12 @@ app.Run();
 
 public delegate NpgsqlConnection SqlConnectionFactory();
 
-public record SomeThing(int SomeId, string SomeText) : IDataReaderMapper<SomeThing>
+public record SomeThing(int SomeId, string SomeText) : IDataRecordMapper<SomeThing>
 {
-    public static SomeThing Map(NpgsqlDataReader dataReader)
-    {
-        return new SomeThing(
-            dataReader.GetInt32(dataReader.GetOrdinal(nameof(SomeId))),
-            dataReader.GetString(dataReader.GetOrdinal(nameof(SomeText))));
-    }
+    public static SomeThing Map(IDataRecord dataRecord) 
+        => new(
+            dataRecord.GetInt32(dataRecord.GetOrdinal(nameof(SomeId))),
+            dataRecord.GetString(dataRecord.GetOrdinal(nameof(SomeText))));
 }
 
 [JsonSerializable(typeof(SomeThing))]

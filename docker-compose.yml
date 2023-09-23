@@ -13,6 +13,7 @@ services:
       POSTGRES_DB: "BasicApiComparison"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
   csharp:
     build:
       context: .
@@ -26,38 +27,37 @@ services:
       # DOTNET_gcServer: 0
     depends_on:
       - postgres
-  # csharp-aot:
-  #   build:
-  #     context: .
-  #     dockerfile: ./dotnet/src/Api/Dockerfile.aot
-  #     # args:
-  #     #   RUNTIME_IDENTIFIER: linux-arm64
-  #   image: basicapicomparison/csharp-aot:latest
-  #   container_name: csharp-aot
-  #   ports:
-  #     - "6008:8080"
-  #   environment:
-  #     ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
-  #     Stack: csharp-aot
-  #     # DOTNET_gcServer: 0
-  #   depends_on:
-  #     - postgres
-
-  # csharp-r2r:
-  #   build:
-  #     context: .
-  #     dockerfile: ./dotnet/src/Api/Dockerfile.r2r
-  #     args:
-  #       runtime_identifier: linux-x64
-  #   image: basicapicomparison/csharp-r2r:latest
-  #   container_name: csharp-r2r
-  #   ports:
-  #     - "6001:80"
-  #   environment:
-  #     ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"      
-  #     Stack: "csharp-r2r"
-  #   depends_on:
-  #    - postgres
+  csharp-aot:
+    build:
+      context: .
+      dockerfile: ./dotnet/src/Api/Dockerfile.aot
+      args:
+        RUNTIME_IDENTIFIER: linux-arm64
+    image: basicapicomparison/csharp-aot:latest
+    container_name: csharp-aot
+    ports:
+      - "6008:8080"
+    environment:
+      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
+      Stack: csharp-aot
+      # DOTNET_gcServer: 0
+    depends_on:
+      - postgres
+  csharp-r2r:
+    build:
+      context: .
+      dockerfile: ./dotnet/src/Api/Dockerfile.r2r
+      args:
+        RUNTIME_IDENTIFIER: linux-arm64
+    image: basicapicomparison/csharp-r2r:latest
+    container_name: csharp-r2r
+    ports:
+      - "6001:8080"
+    environment:
+      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"      
+      Stack: "csharp-r2r"
+    depends_on:
+    - postgres
   
   fsharp:
     build:
