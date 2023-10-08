@@ -20,6 +20,12 @@ k6 run -e STACK=csharp-r2r -e URL=http://localhost:6001 --vus $vu --duration $du
 echo "running csharp r2r"
 k6 run -e STACK=csharp-r2r -e URL=http://localhost:6001 --vus $vu --duration $duration script.js
 
+echo "running csharp controllers (cold start)"
+k6 run -e STACK=csharp-controllers -e URL=http://localhost:6010 --vus $vu --duration $duration script.js
+
+echo "running csharp controllers"
+k6 run -e STACK=csharp-controllers -e URL=http://localhost:6010 --vus $vu --duration $duration script.js
+
 echo "running fsharp (cold start)"
 k6 run -e STACK=fsharp -e URL=http://localhost:6002 --vus $vu --duration $duration script.js
 

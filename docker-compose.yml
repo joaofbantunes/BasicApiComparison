@@ -58,7 +58,19 @@ services:
       Stack: "csharp-r2r"
     depends_on:
     - postgres
-  
+  csharp-controllers:
+    build:
+      context: .
+      dockerfile: ./dotnet/src/ApiControllers/Dockerfile
+    image: basicapicomparison/csharp-controllers:latest
+    container_name: csharp-controllers
+    ports:
+      - "6010:8080"
+    environment:
+      ConnectionStrings__SqlConnectionString: "server=postgres;port=5432;user id=user;password=pass;database=BasicApiComparison"
+      # DOTNET_gcServer: 0
+    depends_on:
+      - postgres
   fsharp:
     build:
       context: .
