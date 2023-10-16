@@ -1,24 +1,16 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-jammy-chiseled AS base
-# in the future, need to figure out how to install globalization dependencies, for now just ignore it
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
-ENV ASPNETCORE_HTTP_PORTS=8080
-WORKDIR /app
-EXPOSE 8080
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
-RUN apt update
-RUN apt-get install -y clang zlib1g-dev
+﻿FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/nightly/sdk:8.0-jammy-aot AS build
+ARG TARGETARCH
 WORKDIR /src
-COPY ["dotnet/src/Api/Api.csproj", "Api/"]
-RUN dotnet restore "Api/Api.csproj"
-WORKDIR "/src/Api"
-COPY dotnet/src/Api/. .
+COPY ["Api.csproj", "."]
+RUN dotnet restore "Api.csproj" -r linux-$TARGETARCH /p:UseAot=true
+COPY [".", "."]
+# /p:DebugType=None /p:DebugSymbols=false gets the image from ~80mb to ~32mb
+RUN dotnet publish "Api.csproj" --no-restore -c Release -r linux-$TARGETARCH -o /app /p:UseAot=true /p:DebugType=None /p:DebugSymbols=false
 
-FROM build AS publish
-ARG RUNTIME_IDENTIFIER="linux-x64"
-RUN dotnet publish "Api.csproj" -c Release -r ${RUNTIME_IDENTIFIER} -o /app/publish /p:UseAot=true /p:DebugType=None /p:DebugSymbols=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/nightly/runtime-deps:8.0-jammy-chiseled-aot AS base
+# # in the future, need to figure out how to install globalization dependencies, for now just ignore it
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 WORKDIR /app
-COPY --from=publish /app/publish .
+USER $APP_UID
+COPY --from=build /app .
 ENTRYPOINT ["./Api"]

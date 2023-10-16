@@ -21,6 +21,7 @@ async def setup_database():
         host=os.environ["DB_HOST"],
         port=os.environ["DB_PORT"],
         min_size=0,  # using 0 as minimum, because otherwise there's an error at startup due to the database not being ready yet
+        max_size=25
     )
 
 

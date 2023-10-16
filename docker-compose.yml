@@ -16,8 +16,8 @@ services:
 
   csharp:
     build:
-      context: .
-      dockerfile: ./dotnet/src/Api/Dockerfile.default
+      context: ./dotnet/src/Api/.
+      dockerfile: Dockerfile.default
     image: basicapicomparison/csharp:latest
     container_name: csharp
     ports:
@@ -29,8 +29,8 @@ services:
       - postgres
   csharp-aot:
     build:
-      context: .
-      dockerfile: ./dotnet/src/Api/Dockerfile.aot
+      context: ./dotnet/src/Api/.
+      dockerfile: Dockerfile.aot
       args:
         RUNTIME_IDENTIFIER: linux-arm64
     image: basicapicomparison/csharp-aot:latest
@@ -45,8 +45,8 @@ services:
       - postgres
   csharp-r2r:
     build:
-      context: .
-      dockerfile: ./dotnet/src/Api/Dockerfile.r2r
+      context: ./dotnet/src/Api/.
+      dockerfile: Dockerfile.r2r
       args:
         RUNTIME_IDENTIFIER: linux-arm64
     image: basicapicomparison/csharp-r2r:latest
@@ -60,8 +60,7 @@ services:
     - postgres
   csharp-controllers:
     build:
-      context: .
-      dockerfile: ./dotnet/src/ApiControllers/Dockerfile
+      context: ./dotnet/src/ApiControllers/.
     image: basicapicomparison/csharp-controllers:latest
     container_name: csharp-controllers
     ports:
@@ -73,8 +72,7 @@ services:
       - postgres
   fsharp:
     build:
-      context: .
-      dockerfile: ./dotnet/src/ApiFSharp/Dockerfile
+      context: ./dotnet/src/ApiFSharp/.
     image: basicapicomparison/fsharp:latest
     container_name: fsharp
     ports:
@@ -89,7 +87,7 @@ services:
     image: basicapicomparison/python:latest
     container_name: python
     ports:
-      - "6003:80"
+      - "6003:8080"
     environment:
       DB_USER: "user"
       DB_PASS: "pass"
@@ -104,7 +102,7 @@ services:
     image: basicapicomparison/node-raw:latest
     container_name: node-raw
     ports:
-      - "6004:80"
+      - "6004:8080"
     environment:
       DB_USER: "user"
       DB_PASS: "pass"
@@ -119,7 +117,7 @@ services:
     image: basicapicomparison/node-express:latest
     container_name: node-express
     ports:
-      - "6005:80"
+      - "6005:8080"
     environment:
       DB_USER: "user"
       DB_PASS: "pass"
