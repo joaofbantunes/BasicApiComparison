@@ -14,6 +14,8 @@ const dbConfig = {
   user: env.DB_USER,
   password: env.DB_PASS,
   database: env.DB_NAME,
+  max: 25,
+  ssl: env.DB_USE_SSL == "true"
 };
 
 const pool = new Pool(dbConfig);
@@ -29,4 +31,4 @@ module.exports = http
       return res.end();
     }
   })
-  .listen(80, () => console.log("NodeJS worker listening on port 80"));
+  .listen(8080, () => console.log("NodeJS worker listening on port 80"));

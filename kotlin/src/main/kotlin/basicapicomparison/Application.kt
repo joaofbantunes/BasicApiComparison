@@ -11,6 +11,7 @@ import io.vertx.pgclient.PgConnectOptions
 import io.vertx.pgclient.PgPool
 import io.vertx.sqlclient.PoolOptions
 import io.vertx.kotlin.coroutines.await
+import io.vertx.pgclient.SslMode
 import kotlinx.serialization.Serializable
 
 fun main() {
@@ -27,11 +28,12 @@ fun main() {
             .setDatabase(dbName)
             .setUser(dbUser)
             .setPassword(dbPass)
+            .setSslMode(SslMode.PREFER)
             .apply {
                 cachePreparedStatements = true
             }
 
-    val poolOptions = PoolOptions()
+    val poolOptions = PoolOptions().setMaxSize(25)
     val pool = PgPool.pool(connectOptions, poolOptions)
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {

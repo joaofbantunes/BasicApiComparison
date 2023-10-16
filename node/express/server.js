@@ -14,13 +14,15 @@ const dbConfig = {
   user: env.DB_USER,
   password: env.DB_PASS,
   database: env.DB_NAME,
+  max: 25,
+  ssl: env.DB_USE_SSL == "true"
 };
 
 const pool = new Pool(dbConfig);
 
 const express = require('express')
 const app = express()
-const port = 80
+const port = 8080
 
 app.get('/', async (req, res) => {
     const {rows} = await pool.query("SELECT SomeId, SomeText FROM SomeThing LIMIT 1");

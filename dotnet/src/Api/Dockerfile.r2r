@@ -1,19 +1,13 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
+﻿FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
+ARG TARGETARCH
+WORKDIR /src
+COPY ["Api.csproj", "."]
+RUN dotnet restore "Api.csproj" /p:PublishReadyToRun=true -r linux-$TARGETARCH
+COPY [".", "."]
+RUN dotnet publish "Api.csproj" --no-restore -c Release -o /app /p:PublishAot=false /p:PublishReadyToRun=true -r linux-$TARGETARCH
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
 WORKDIR /app
 EXPOSE 8080
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
-WORKDIR /src
-COPY ["dotnet/src/Api/Api.csproj", "Api/"]
-RUN dotnet restore "Api/Api.csproj"
-WORKDIR "/src/Api"
-COPY dotnet/src/Api/. .
-
-FROM build AS publish
-ARG RUNTIME_IDENTIFIER="linux-x64"
-RUN dotnet publish "Api.csproj" -c Release --self-contained false -r ${RUNTIME_IDENTIFIER} -p:PublishReadyToRun=true -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["./Api"]
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Api.dll"]

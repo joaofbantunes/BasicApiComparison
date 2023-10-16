@@ -1,19 +1,13 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
+﻿FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
+ARG TARGETARCH
+WORKDIR /src
+COPY ["ApiControllers.csproj", "."]
+RUN dotnet restore "ApiControllers.csproj" -a $TARGETARCH
+COPY [".", "."]
+RUN dotnet publish "ApiControllers.csproj" --no-restore -c Release -o /app /p:PublishAot=false -a $TARGETARCH
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
-WORKDIR /src
-COPY ["dotnet/src/ApiControllers/ApiControllers.csproj", "ApiControllers/"]
-RUN dotnet restore "ApiControllers/ApiControllers.csproj"
-WORKDIR "/src/ApiControllers"
-COPY dotnet/src/ApiControllers/. .
-
-FROM build AS publish
-RUN dotnet publish "ApiControllers.csproj" -c Release -o /app/publish /p:PublishAot=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app .
 ENTRYPOINT ["dotnet", "ApiControllers.dll"]

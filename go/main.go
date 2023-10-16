@@ -25,9 +25,10 @@ func main() {
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
 	dbName := os.Getenv("DB_NAME")
+	maxConns := 25
 
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
-		dbHost, dbPort, dbUser, dbPass, dbName,
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s pool_max_conns=%d sslmode=prefer",
+		dbHost, dbPort, dbUser, dbPass, dbName, maxConns,
 	)
 
 	// TODO: find a better solution to wait for postgres
@@ -47,7 +48,14 @@ func main() {
 		func(w http.ResponseWriter, r *http.Request) {
 			var someId int
 			var someText string
-			pool.QueryRow(context.Background(), "SELECT SomeId, SomeText FROM SomeThing LIMIT 1").Scan(&someId, &someText)
+			err = pool.QueryRow(context.Background(), "SELECT SomeId, SomeText FROM SomeThing LIMIT 1").Scan(&someId, &someText)
+
+			if err != nil {
+				log.Println(err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+
 			result := struct {
 				SomeId   int    `json:"someId"`
 				SomeText string `json:"someText"`
@@ -59,6 +67,7 @@ func main() {
 			w.Header().Set("stack", "go")
 			json.NewEncoder(w).Encode(result)
 		}).Methods(http.MethodGet)
+
 	log.Print("Starting go server")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

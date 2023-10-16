@@ -1,18 +1,13 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
+﻿FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
+ARG TARGETARCH
+WORKDIR /src
+COPY ["ApiFSharp.fsproj", "."]
+RUN dotnet restore "ApiFSharp.fsproj" -a $TARGETARCH
+COPY [".", "."]
+RUN dotnet publish "ApiFSharp.fsproj" --no-restore -c Release -o /app /p:PublishAot=false -a $TARGETARCH
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS base
 WORKDIR /app
 EXPOSE 8080
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build
-WORKDIR /src
-COPY ["dotnet/src/ApiFSharp/ApiFSharp.fsproj", "ApiFSharp/"]
-RUN dotnet restore "ApiFSharp/ApiFSharp.fsproj"
-WORKDIR "/src/ApiFSharp"
-COPY dotnet/src/ApiFSharp/. .
-
-FROM build AS publish
-RUN dotnet publish "ApiFSharp.fsproj" -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app .
 ENTRYPOINT ["dotnet", "ApiFSharp.dll"]
