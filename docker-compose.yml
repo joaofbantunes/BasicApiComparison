@@ -31,8 +31,6 @@ services:
     build:
       context: ./dotnet/src/Api/.
       dockerfile: Dockerfile.aot
-      args:
-        RUNTIME_IDENTIFIER: linux-arm64
     image: basicapicomparison/csharp-aot:latest
     container_name: csharp-aot
     ports:
@@ -47,8 +45,6 @@ services:
     build:
       context: ./dotnet/src/Api/.
       dockerfile: Dockerfile.r2r
-      args:
-        RUNTIME_IDENTIFIER: linux-arm64
     image: basicapicomparison/csharp-r2r:latest
     container_name: csharp-r2r
     ports:
