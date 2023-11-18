@@ -1,12 +1,12 @@
-using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Nanorm;
 using Npgsql;
 
-Console.WriteLine(RuntimeFeature.IsDynamicCodeSupported ? "Running with JIT" : "Running with AOT");
+[module:DapperAot]
 
+Console.WriteLine(RuntimeFeature.IsDynamicCodeSupported ? "Running with JIT" : "Running with AOT");
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
@@ -16,14 +16,18 @@ builder.Services
         var connectionString = config.GetConnectionString("SqlConnectionString");
         return () => new NpgsqlConnection(connectionString);
     });
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.TypeInfoResolverChain.Clear();
-    // Wire up the JSON source generator and make sure we remove the reflection fallback.
-    // this is a good way to verify that the source generator is working as expected.
-    options.SerializerOptions.TypeInfoResolverChain.Add(SomeThingJsonContext.Default);
-});
-builder.Services.AddControllers();
+
+builder.Services
+    .AddControllers()
+    // note that json configuration with controllers is different than with minimal APIs
+    .AddJsonOptions(
+    static options =>
+    {
+        options.JsonSerializerOptions.TypeInfoResolverChain.Clear();
+        // Wire up the JSON source generator and make sure we remove the reflection fallback.
+        // this is a good way to verify that the source generator is working as expected.
+        options.JsonSerializerOptions.TypeInfoResolverChain.Add(SomeThingJsonContext.Default);
+    });
 builder.Services.AddSingleton(new Stack(builder.Configuration.GetValue<string>("Stack") ?? "csharp-controllers"));
 var app = builder.Build();
 app.MapControllers();
@@ -54,13 +58,7 @@ public class SomeController : ControllerBase
 
 public delegate NpgsqlConnection SqlConnectionFactory();
 
-public record SomeThing(int SomeId, string SomeText) : IDataRecordMapper<SomeThing>
-{
-    public static SomeThing Map(IDataRecord dataRecord) 
-        => new(
-            dataRecord.GetInt32(dataRecord.GetOrdinal(nameof(SomeId))),
-            dataRecord.GetString(dataRecord.GetOrdinal(nameof(SomeText))));
-}
+public record SomeThing(int SomeId, string SomeText);
 
 [JsonSerializable(typeof(SomeThing))]
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]

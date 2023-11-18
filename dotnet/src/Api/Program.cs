@@ -1,11 +1,11 @@
-using System.Data;
+using Dapper;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using Nanorm;
 using Npgsql;
 
-Console.WriteLine(RuntimeFeature.IsDynamicCodeSupported ? "Running with JIT" : "Running with AOT");
+[module:DapperAot]
 
+Console.WriteLine(RuntimeFeature.IsDynamicCodeSupported ? "Running with JIT" : "Running with AOT");
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
@@ -23,30 +23,39 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.TypeInfoResolverChain.Add(SomeThingJsonContext.Default);
 });
 
-var stack = builder.Configuration.GetValue<string>("Stack") ?? "csharp";
+builder.Services.AddSingleton(new Stack(builder.Configuration.GetValue<string>("Stack") ?? "csharp"));
+
 var app = builder.Build();
 
+// Dapper.AOT, at least at the moment (it was released like 4 days ago), doesn't seem to be able to handle things if we don't put it in a class
+// app.MapGet("/", async (HttpContext context, SqlConnectionFactory sqlConnectionFactory, Stack stack) =>
+// {
+//     await using var connection = sqlConnectionFactory();
+//     var item = await connection.QuerySingleAsync<SomeThing>("SELECT SomeId, SomeText FROM SomeThing LIMIT 1");
+//     context.Response.Headers["stack"] = stack.Name;
+//     return Results.Ok(item);
+// });
 
-app.MapGet("/", async (HttpContext context, SqlConnectionFactory sqlConnectionFactory) =>
-{
-    // was using Dapper, but it isn't compatible with AOT, so using Damian Edwards' Nanorm
-    await using var connection = sqlConnectionFactory();
-    var item = await connection.QuerySingleAsync<SomeThing>("SELECT SomeId, SomeText FROM SomeThing LIMIT 1");
-    context.Response.Headers["stack"] = stack;
-    return Results.Ok(item);
-});
+app.MapGet("/", Handlers.Root);
 
 app.Run();
 
+public static class Handlers
+{
+    public static async Task<IResult> Root(HttpContext context, SqlConnectionFactory sqlConnectionFactory, Stack stack)
+    {
+        await using var connection = sqlConnectionFactory();
+        var item = await connection.QuerySingleAsync<SomeThing>("SELECT SomeId, SomeText FROM SomeThing LIMIT 1");
+        context.Response.Headers["stack"] = stack.Name;
+        return Results.Ok(item);
+    }    
+}
+
 public delegate NpgsqlConnection SqlConnectionFactory();
 
-public record SomeThing(int SomeId, string SomeText) : IDataRecordMapper<SomeThing>
-{
-    public static SomeThing Map(IDataRecord dataRecord) 
-        => new(
-            dataRecord.GetInt32(dataRecord.GetOrdinal(nameof(SomeId))),
-            dataRecord.GetString(dataRecord.GetOrdinal(nameof(SomeText))));
-}
+public record SomeThing(int SomeId, string SomeText);
+
+public record Stack(string Name);
 
 [JsonSerializable(typeof(SomeThing))]
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]

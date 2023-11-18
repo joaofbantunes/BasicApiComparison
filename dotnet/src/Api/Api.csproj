@@ -7,10 +7,14 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <!-- having this conditional means no warnings in dev time about potential aot issues, but given this is just for playing around, it's fine-->
     <PublishAot Condition="'$(UseAot)' == 'true'">true</PublishAot>
+    <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Dapper.AOT</InterceptorsPreviewNamespaces>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nanorm.Npgsql" Version="0.0.6" />
+    <PackageReference Include="Dapper" Version="2.1.21" />
+    <PackageReference Include="Dapper.AOT" Version="1.0.16" />
     <PackageReference Include="Npgsql" Version="8.0.0-rc.2" />
   </ItemGroup>
 

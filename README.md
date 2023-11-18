@@ -5,7 +5,8 @@ Just a bunch of basic APIs, exposing a single GET endpoint returning some databa
 Also took the opportunity to do some (very naive) performance tests.
 
 APIs were developed with
-- C#, ASP.NET Core, Npgsql, Nanorm
+
+- C#, ASP.NET Core, Npgsql, Dapper
 - F#, ASP.NET Core, Npgsql, Dapper
 - Python, FastAPI, asyncpg
 - JavaScript, Node.js, no web framework, pg
@@ -27,10 +28,10 @@ The k6 test was very simple. Hammer the API during 5 seconds with 10 virtual use
 
 | Stack              | Requests Per Second |
 | -------------------| ------------------- |
-| csharp             | 11721               |
-| csharp-aot         | 10945               |
+| csharp             | 11773               |
+| csharp-aot         | 12096               |
 | csharp-r2r         | 12115               |
-| csharp-controllers | 10984               |
+| csharp-controllers | 11109               |
 | fsharp             | 11823               |
 | python             | 7323                |
 | node-raw           | 12058               |
