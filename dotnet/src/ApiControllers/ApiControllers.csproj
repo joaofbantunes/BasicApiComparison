@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.21" />
-    <PackageReference Include="Dapper.AOT" Version="1.0.16" />
+    <PackageReference Include="Dapper.AOT" Version="1.0.23" />
     <PackageReference Include="Npgsql" Version="8.0.0-rc.2" />
   </ItemGroup>
 
