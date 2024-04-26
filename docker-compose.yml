@@ -168,3 +168,33 @@ services:
       DB_NAME: "BasicApiComparison"
     depends_on:
       - postgres
+  bun-raw:
+    build:
+      context: ./bun/raw
+    image: basicapicomparison/bun-raw:latest
+    container_name: bun-raw
+    ports:
+      - "6011:8080"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  bun-hono:
+    build:
+      context: ./bun/hono
+    image: basicapicomparison/bun-hono:latest
+    container_name: bun-hono
+    ports:
+      - "6012:8080"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres

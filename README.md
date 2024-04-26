@@ -14,6 +14,8 @@ APIs were developed with
 - Go, gorilla/mux, pgx
 - Kotlin, Ktor, Vert.x PostgreSQL Client
 - Rust, Actix, Tokio Postgres, Deadpool Postgres
+- TypeScript, Bun, no web framework, pg
+- TypeScript, Bun, Hono, pg
 
 ## Notes
 
@@ -39,5 +41,7 @@ The k6 test was very simple. Hammer the API during 5 seconds with 10 virtual use
 | go                 | 15990               |
 | kotlin             | 10199               |
 | rust               | 10773               |
+| bun-raw            | 12196               |
+| bun-hono           | 11707               |
 
 ⚠️ Again, don't take this seriously! For actually well done performance tests (although with some not super realistic implementations), check out [TechEmpower Web Framework Benchmarks](https://www.techempower.com/benchmarks). I just felt like playing around with stuff without much care.

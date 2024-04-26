@@ -1,0 +1,15 @@
+{
+  "name": "hono",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "hono": "^4.2.8",
+    "pg": "^8.11.5"
+  }
+}
