@@ -31,4 +31,4 @@ module.exports = http
       return res.end();
     }
   })
-  .listen(8080, () => console.log("NodeJS worker listening on port 80"));
+  .listen(8080, () => console.log("NodeJS worker listening on port 8080"));
