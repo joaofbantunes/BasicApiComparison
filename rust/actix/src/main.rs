@@ -16,10 +16,10 @@ async fn hello(data: web::Data<Pool>) -> impl Responder {
     let result = fetch(data).await;
     match result {
         Ok(thing) => HttpResponse::Ok()
-            .insert_header(("stack", "rust"))
+            .insert_header(("stack", "rust-actix"))
             .json(thing),
         Err(e) => HttpResponse::InternalServerError()
-            .insert_header(("stack", "rust"))
+            .insert_header(("stack", "rust-actix"))
             .body(e.to_string()),
     }
 }

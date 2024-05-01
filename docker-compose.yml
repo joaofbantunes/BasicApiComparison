@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   postgres:
     image: "postgres:13-alpine"
@@ -153,11 +151,11 @@ services:
       DB_NAME: "BasicApiComparison"
     depends_on:
       - postgres
-  rust:
+  rust-actix:
     build:
-      context: ./rust
-    image: basicapicomparison/rust:latest
-    container_name: rust
+      context: ./rust/actix
+    image: basicapicomparison/rust-actix:latest
+    container_name: rust-actix
     ports:
       - "6009:8080"
     environment:
@@ -190,6 +188,21 @@ services:
     container_name: bun-hono
     ports:
       - "6012:8080"
+    environment:
+      DB_USER: "user"
+      DB_PASS: "pass"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "BasicApiComparison"
+    depends_on:
+      - postgres
+  rust-axum:
+    build:
+      context: ./rust/axum
+    image: basicapicomparison/rust-axum:latest
+    container_name: rust-axum
+    ports:
+      - "6013:8080"
     environment:
       DB_USER: "user"
       DB_PASS: "pass"

@@ -14,6 +14,7 @@ APIs were developed with
 - Go, gorilla/mux, pgx
 - Kotlin, Ktor, Vert.x PostgreSQL Client
 - Rust, Actix, Tokio Postgres, Deadpool Postgres
+- Rust, Axum, Tokio Postgres, Deadpool Postgres
 - TypeScript, Bun, no web framework, pg
 - TypeScript, Bun, Hono, pg
 
@@ -40,7 +41,8 @@ The k6 test was very simple. Hammer the API during 5 seconds with 10 virtual use
 | node-express       | 9609                |
 | go                 | 15990               |
 | kotlin             | 10199               |
-| rust               | 10773               |
+| rust-actix         | 10773               |
+| rust-axum          | 12324               |
 | bun-raw            | 12196               |
 | bun-hono           | 11707               |
 

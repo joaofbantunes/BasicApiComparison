@@ -33,8 +33,11 @@ k6 run -e STACK=go -e URL=http://localhost:6006 --vus $vu --duration $duration s
 echo "running kotlin"
 k6 run -e STACK=kotlin -e URL=http://localhost:6007 --vus $vu --duration $duration script.js
 
-echo "running rust"
-k6 run -e STACK=rust -e URL=http://localhost:6009 --vus $vu --duration $duration script.js
+echo "running rust actix"
+k6 run -e STACK=rust-actix -e URL=http://localhost:6009 --vus $vu --duration $duration script.js
+
+echo "running rust axum"
+k6 run -e STACK=rust-axum -e URL=http://localhost:6013 --vus $vu --duration $duration script.js
 
 echo "running bun raw"
 k6 run -e STACK=bun-raw -e URL=http://localhost:6011 --vus $vu --duration $duration script.js
